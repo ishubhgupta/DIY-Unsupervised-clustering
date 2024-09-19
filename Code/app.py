@@ -28,13 +28,15 @@
 import pandas as pd
 import streamlit as st # For building the web app
 from train_Kmeans import train_model as train
+from train_gmm import train_model as train_gmm
+from train_db import train_model as train_db
 
 st.set_page_config(page_title="Unsupervised Clustering", page_icon=":cash:", layout="centered")
 st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering </h1>", unsafe_allow_html=True)
 st.divider()
 
 
-tab1, tab2, tab3 =  st.tabs(["Model Config", "Model Training", "Model Evaluation"])
+tab1, tab2=  st.tabs(["Model Config", "Model Training & Evaluation"])
 
 with tab1:  
     uploaded_file = st.file_uploader("Upload your dataset (CSV format)", type="csv")
@@ -52,18 +54,59 @@ with tab2:
     st.subheader("Model Training")
     st.write("This is where you can train the model.")
     st.divider()
-    
-    st.markdown("<h3 style='text-align: center; color: white;'>K-Means</h3>", unsafe_allow_html=True)
 
-    if st.button("Train K-Means Model", use_container_width=True):
+    # K-Means
+
+    model_name = 'K-Means'
+    st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
+
+    if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status("Training K-Means Model..."):
             score= train(df)
 
-        st.success("K-Means Trained Sucessully")
+        st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
 
         st.write(f"Silhouette: {score}")
-        st.image("Code/saved images/K-Means.jpg", caption="Cluster graph of K-Means", width=600)
+        st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
         st.divider()
+        
+    # Gaussian Mixture Model
+    
+    model_name = 'Gaussian Mixture Model'
+    st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
+
+    if st.button(f"Train {model_name} Model", use_container_width=True):
+        
+        with st.status(f"Training {model_name}..."):
+            score= train_gmm(df)
+
+        st.success(f"{model_name} Trained Sucessully")
+        st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
+
+        st.write(f"Silhouette: {score}")
+        st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
+
+        st.divider()
+        
+        
+    # DBSCAN
+    
+    model_name = 'DBSCAN'
+    st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
+
+    if st.button(f"Train {model_name} Model", use_container_width=True):
+        
+        with st.status(f"Training {model_name}..."):
+            score= train_db(df)
+
+        st.success(f"{model_name} Trained Sucessully")
+        st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
+
+        st.write(f"Silhouette: {score}")
+        st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
+
+        st.divider()
+
