@@ -34,10 +34,11 @@ from sklearn.discriminant_analysis import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
 
+le = LabelEncoder()
 
 def preprocess_data(df):
-    # Drop customer_id column
-    le = LabelEncoder()
+    global le
+    
     df['gender'] = le.fit_transform(df['gender'])
     df['region'] = le.fit_transform(df['region'])
     df['customer_type'] = le.fit_transform(df['customer_type'])
@@ -64,3 +65,8 @@ def scale_data(X, minmax = False):
     X_pca = pca.fit_transform(X_scaled)
 
     return X_pca
+
+def preprocess_test(data):
+    global le
+    data = le.transform(data)
+    

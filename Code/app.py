@@ -26,19 +26,22 @@
 
 
 import pandas as pd
+from sklearn.cluster import DBSCAN, KMeans
 import streamlit as st # For building the web app
 from train_Kmeans import train_model as train
 from train_gmm import train_model as train_gmm
 from train_db import train_model as train_db
 from train_optics import train_model as train_optics
 from train_birch import train_model as train_birch
+from classification import classify
+from ingest_transform import preprocess_test
 
 st.set_page_config(page_title="Unsupervised Clustering", page_icon=":cash:", layout="centered")
 st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering </h1>", unsafe_allow_html=True)
 st.divider()
 
 
-tab1, tab2=  st.tabs(["Model Config", "Model Training & Evaluation"])
+tab1, tab2, tab3=  st.tabs(["Model Config", "Model Training & Evaluation", "Classification"])
 
 with tab1:  
     uploaded_file = st.file_uploader("Upload your dataset (CSV format)", type="csv")
@@ -63,9 +66,10 @@ with tab2:
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
     if st.button(f"Train {model_name} Model", use_container_width=True):
-        
         with st.status("Training K-Means Model..."):
-            score= train(df)
+            score = train(df)
+    
+            st.write(f"Training complete! The score is: {score}")
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
@@ -149,3 +153,64 @@ with tab2:
 
         st.divider()
 
+
+# with tab3:
+#     with st.sidebar:
+#         st.header("Clustering Options")
+#         st.write("Choose a clustering algorithm and parameters.")
+#         algorithm = st.selectbox("Select algorithm:", ("KMeans", "DBSCAN", "Gaussian Mixture Model", "OPTICS", "BIRCH"))
+
+#         if algorithm == "KMeans":
+#             num_clusters = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1)
+#             score = train(df)
+
+#         elif algorithm == "DBSCAN":
+#             eps = st.slider('EPS (distance threshold):', min_value=0.1, max_value=2.0, value=0.5, step=0.1)
+#             min_sm = st.slider('Min Samples', min_value=0, max_value=50, step=2)
+#         elif algorithm == "Gaussian Mixture Model":
+#             n_component = st.slider('n_component:', min_value=0, max_value=10, step=1)
+#         elif algorithm == "OPTICS" :
+#             min_sample = st.slider('min_samples:', min_value=0, max_value=20, step=1)
+#             xi = st.slider('xi:', min_value=0.0, max_value=1.0, step=0.01)
+#             cluster = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
+#         elif algorithm == 'BIRCH' :
+#             n_cluster = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1)
+#             threas = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
+
+
+#     with st.form(key="clustering_form"):
+#         st.subheader("Clustering")
+#         st.write("Enter customer details for clustering.")
+
+#         age = st.number_input('Enter age (18-80):', min_value=18, max_value=80, value=30)
+
+#         income = st.number_input('Enter annual income (30000.00-100000.00):', min_value=3000.00, max_value=300000.00, value=50000.00, step=0.01, format="%.2f")
+
+#         purchase_history = st.number_input('Enter Purchase history :', min_value=100, max_value=50000, value=500)
+
+#         customer_spending_score = st.number_input('Enter Customer Spending Score :', min_value=0, max_value=100, value=50)
+
+#         freq_of_visit = st.number_input('Enter frequency of visit:', min_value=0, max_value=100, value=50)
+
+#         gender_opt = ['Male', 'Female', 'Agender', 'Genderqueer', 'Polygender', 'Genderfluid', 'Non-binary', 'Bigender']
+
+
+#         gender = st.radio('Choose an option:', gender_opt)
+#         region = st.radio('Choose an option:', ['East', 'West', 'North', 'South'])
+#         customer_type = st.radio('Choose an option:', ['budget', 'regular', 'premium'])
+
+#         items = [age, income, purchase_history, customer_spending_score, freq_of_visit, gender, region, customer_type]
+
+#         if st.form_submit_button("Cluster", use_container_width=True):
+#             if algorithm == "KMeans":
+#                 new_cluster = classify(df, algorithm, num_clusters, items)
+#                 st.write(f"New data point belongs to cluster: {new_cluster}")
+#             # elif algorithm == "DBSCAN":
+#             #     model = DBSCAN(eps=eps)
+#             #     clusters = model.fit_predict(df[['Age', 'Annual Income', 'Credit Score']])
+
+#             # # Add new data point to predict its cluster
+#             # new_data = pd.DataFrame([items], columns=['age', 'income', 'purchase_history', 'customer_spending_score', 'freq_of_visit', 'gender', 'region', 'customer_type'])
+#             # new_cluster = model.predict(new_data)[0]
+
+#             # st.write(f"New data point belongs to cluster: {new_cluster}")
