@@ -27,4 +27,27 @@ The dataset used for clustering tasks is designed to facilitate clustering analy
 1. *Data Ingestion*: Extract data and preprocess it. [ingest_transform.py]
 2. *Data Transformation*: Encode categorical features, handle missing values, scale data, and apply PCA for dimensionality reduction. [ingest_transform.py]
 3. *Model Training*: Train various clustering models (BIRCH, DBSCAN, GMM, KMeans, OPTICS) using the preprocessed data. [train_birch.py, train_dbscan.py, train_gmm.py, train_kmeans.py, train_optics.py]
-4. *Model Evaluation*: Evaluate the performance o
+4. *Model Evaluation*: Evaluate the performance of the clustering models using silhouette scores and generate visualizations. [evaluate.py]
+5. *Visualization*: Save and display clustering results. [evaluate.py]
+
+## Steps to Run
+
+1. *Install Dependencies*:
+    bash
+    pip install -r requirements.txt
+    
+
+2. *Run*:
+    bash
+    python Code/app.py
+    
+
+3. *View Evaluation Results*: Check the saved images/ directory for saved plots and evaluation results.
+
+## Contact
+
+- *Developers*:
+  - Akshat Rastogi
+  - Shubh Gupta
+  - Rupal Mishra
+- *Code Ownership Rights*: PreProd Corp
