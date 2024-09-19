@@ -36,7 +36,8 @@ def evaluate_model(X_pca, labels, algorithm_name, centroids = None):
     plt.scatter(X_pca[:, 0], X_pca[:, 1], c=labels, cmap='viridis', marker='o', s=100, label="Data points")
 
     # Plot the centroids on the same plot
-    plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=200, marker='x', label="Centroids")
+    if(centroids is not None):
+        plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=200, marker='x', label="Centroids")
 
     # Adding title and labels
     plt.title(f'{algorithm_name} Clustering on Dataset')
@@ -45,5 +46,5 @@ def evaluate_model(X_pca, labels, algorithm_name, centroids = None):
     plt.legend()
     plt.grid(True)
     plt.savefig(f'Code/saved images/{algorithm_name}.jpg', format="jpg", dpi=300)
-    
+    plt.show()
     return silhouette_avg
