@@ -35,26 +35,53 @@ from train_db import train_model as train_db
 from train_optics import train_model as train_optics
 from train_birch import train_model as train_birch
 from classification import classify
-from ingest_transform import preprocess_test
+from ingest_transform import preprocess_test, store_path_to_sqlite, retrieve_path_from_sqlite
+import sqlite3
 
+
+
+# Set up the Streamlit page
 st.set_page_config(page_title="Unsupervised Clustering", page_icon=":cash:", layout="centered")
-st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering</h1>", unsafe_allow_html=True)
 st.divider()
 
+if "sqlite_db_path" not in st.session_state:
+    st.session_state.db_path = "Data/Processed/sqlite.db"
 
-tab1, tab2, tab3=  st.tabs(["Model Config", "Model Training & Evaluation", "Classification"])
+if "master_data_path" not in st.session_state:
+    st.session_state.master_data_path = r"Data\Master\MOCK_DATA.csv"
 
-with tab1:  
-    uploaded_file = st.file_uploader("Upload your dataset (CSV format)", type="csv")
+if "sqlite_db_path" not in st.session_state:
+    st.session_state.sqlite_db_path = r"Data\Processed\sqlite.db"
 
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
+tab1, tab2, tab3 = st.tabs(["Model Config", "Model Training & Evaluation", "Classification"])
 
+
+with tab1:
+    # Input for the file path
+    uploaded_file = st.text_input("Enter the path to the Master data", value=st.session_state.master_data_path)
+
+    if uploaded_file:
+        try:
+            # Load the data
+            df = pd.read_csv(uploaded_file)
+            st.write("Here is a preview of your data:")
+            st.write(df.head())
+
+            # Update session state
+            st.session_state.master_data_path = uploaded_file
+
+            # Store the path to SQLite database
+            db_path = st.session_state.sqlite_db_path
+            store_path_to_sqlite(uploaded_file, db_path)
+        except Exception as e:
+            st.error(f"Error loading file: {e}")
     else:
-        df = pd.read_csv("MOCK_DATA.csv")
+        # Load default data
+        df = pd.read_csv(st.session_state.master_data_path)
+        st.write("Here is a preview of your data:")
+        st.write(df.head())
 
-    st.write("Here is a preview of your data:")
-    st.write(df.head())
 
 with tab2:
     st.subheader("Model Training")

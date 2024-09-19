@@ -29,6 +29,7 @@ import pandas as pd  # For data manipulation and analysis
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler  # Corrected import
 from sklearn.impute import SimpleImputer
+import sqlite3
 
 # Example mappings for gender, region, and customer type
 gender_mapping = {'Male': 0, 'Female': 1, 'Agender': 2, 'Genderqueer': 3, 'Polygender': 4, 'Genderfluid': 5, 'Non-binary': 6, 'Bigender': 7}
@@ -92,3 +93,51 @@ def scale_back(items, minm=False):
     scaled_pca = pca.transform(X_scaled)
 
     return scaled_pca
+
+# Function to store the master data path in SQLite
+def store_path_to_sqlite(path, db_path):
+    try:
+        # Create or connect to the SQLite database
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Create a table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS config (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                master_data_path TEXT
+            );
+        ''')
+
+        # Insert or update the master data path
+        cursor.execute('''
+            INSERT INTO config (master_data_path)
+            VALUES (?)
+        ''', (path,))
+        
+        conn.commit()
+        conn.close()
+        print("Path stored successfully.")
+    except Exception as e:
+        print(f"Error storing path to SQLite: {e}")
+
+
+# Function to retrieve the master data path from SQLite
+def retrieve_path_from_sqlite(db_path):
+    """Retrieve the master data path from SQLite database."""
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT master_data_path FROM config ORDER BY id DESC LIMIT 1')
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return row[0]
+        else:
+            print("No path found in the database.")
+            return None
+    except Exception as e:
+        print(f"Error retrieving path from SQLite: {e}")
+        return None
