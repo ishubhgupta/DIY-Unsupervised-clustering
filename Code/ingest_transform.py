@@ -27,12 +27,12 @@
 
 
 import pandas as pd # For data manipulation and analysis
-import sqlite3 # For connecting to and interacting with SQLite databases
+# import sqlite3 # For connecting to and interacting with SQLite databases
 from sklearn.calibration import LabelEncoder
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split # For splitting the data
+
 
 def preprocess_data(df):
     # Drop customer_id column
@@ -46,16 +46,9 @@ def preprocess_data(df):
     imputer = SimpleImputer(strategy='mean')
     df[col] = imputer.fit_transform(df[col])
 
-    df = df.drop(column = ['id'])
-
-    return df
-
-def feature_selection(df):
-    cols = df.select_dtypes(include=['number'])
-    X = df[cols].values
+    X = df[col].values
 
     return X
-    
 
 def scale_data(X):
     scaler = StandardScaler()  # Changed to StandardScaler

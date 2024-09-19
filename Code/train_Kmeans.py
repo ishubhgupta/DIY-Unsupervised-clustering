@@ -28,22 +28,19 @@
 import pandas as pd # For data manipulation and analysis
 import joblib # For loading the trained model
 from sklearn.cluster import KMeans # For training the model
-from ingest_transform import preprocess_data, scale_data, feature_selection
+from ingest_transform import preprocess_data, scale_data
 
 # Importing helper functions from the local .py files
-from load import load_train
-from evaluate import evaluate_model, grpahs_k
+# from load import load_train
+from evaluate import evaluate_model
 
 def train_model(df):
-    df = preprocess_data(df)
-    X = feature_selection(df)
+    X = preprocess_data(df)
     X_pca = scale_data(X)
     kmeans = KMeans(n_clusters=3, random_state=42).fit(X_pca)
     centroids = kmeans.cluster_centers_
     labels = kmeans.labels_
-    evals = evaluate_model(X_pca, labels)
-    graph = grpahs_k()
+    evals = evaluate_model(X_pca, labels, "K-Means", centroids)
+    print(evals)
 
-    # Save the trained model
-    joblib.dump(kmeans, model_path)
-    return evals, graph
+    return evals

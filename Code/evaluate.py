@@ -27,12 +27,9 @@
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 
-def evaluate_model(labels, X_pca):
+def evaluate_model(X_pca, labels, algorithm_name, centroids = None):
     silhouette_avg = silhouette_score(X_pca, labels)
 
-    return silhouette_avg
-
-def graphs_k(X_pca, labels, centroids):
     plt.figure(figsize=(8, 6))
 
     # Scatter plot of the data points colored by cluster label
@@ -42,11 +39,11 @@ def graphs_k(X_pca, labels, centroids):
     plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=200, marker='x', label="Centroids")
 
     # Adding title and labels
-    plt.title('K-Means Clustering on Dataset')
+    plt.title(f'{algorithm_name} Clustering on Dataset')
     plt.xlabel('Feature 1 (Standardized)')
     plt.ylabel('Feature 2 (Standardized)')
     plt.legend()
     plt.grid(True)
-
-    # Show the plot
-    plt.show()
+    plt.savefig(f'Code/saved images/{algorithm_name}.jpg', format="jpg", dpi=300)
+    
+    return silhouette_avg

@@ -34,7 +34,7 @@ st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clusteri
 st.divider()
 
 
-tab1, tab2, tab3, tab4 =  st.tabs(["Model Config", "Model Training", "Model Evaluation", "Model Prediction"])
+tab1, tab2, tab3 =  st.tabs(["Model Config", "Model Training", "Model Evaluation"])
 
 with tab1:  
     uploaded_file = st.file_uploader("Upload your dataset (CSV format)", type="csv")
@@ -58,7 +58,12 @@ with tab2:
     if st.button("Train K-Means Model", use_container_width=True):
         
         with st.status("Training K-Means Model..."):
-            score, cluster_graph = train(df)
+            score= train(df)
 
         st.success("K-Means Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
+
+        st.write(f"Silhouette: {score}")
+        st.image("Code/saved images/K-Means.jpg", caption="Cluster graph of K-Means", width=600)
+
+        st.divider()
