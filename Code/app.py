@@ -25,6 +25,7 @@
         # Streamlit 1.36.0
 
 
+import numpy as np
 import pandas as pd
 from sklearn.cluster import DBSCAN, KMeans
 import streamlit as st # For building the web app
@@ -145,7 +146,7 @@ with tab2:
     model_name = 'BIRCH'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
-    n_clus1 = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1, key='clusters_option_2')
+    n_clus1 = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1, key='clusters_option_1')
     threas = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05, key='thres_option_2')
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
@@ -161,63 +162,37 @@ with tab2:
     st.divider()
 
 
-# with tab3:
-#     with st.sidebar:
-#         st.header("Clustering Options")
-#         st.write("Choose a clustering algorithm and parameters.")
-#         algorithm = st.selectbox("Select algorithm:", ("KMeans", "DBSCAN", "Gaussian Mixture Model", "OPTICS", "BIRCH"))
+with tab3:
+    algorithm = st.selectbox("Select algorithm:", ("KMeans", "DBSCAN", "Gaussian Mixture Model", "OPTICS", "BIRCH"))
+    
+    if algorithm == "KMeans":
+            num_clusters = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1, key='clusters_option_2')
+            
 
-#         if algorithm == "KMeans":
-#             num_clusters = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1)
-#             score = train(df)
+            with st.form(key="clustering_form"):
+                st.subheader("Clustering")
+                st.write("Enter customer details for clustering.")
 
-#         elif algorithm == "DBSCAN":
-#             eps = st.slider('EPS (distance threshold):', min_value=0.1, max_value=2.0, value=0.5, step=0.1)
-#             min_sm = st.slider('Min Samples', min_value=0, max_value=50, step=2)
-#         elif algorithm == "Gaussian Mixture Model":
-#             n_component = st.slider('n_component:', min_value=0, max_value=10, step=1)
-#         elif algorithm == "OPTICS" :
-#             min_sample = st.slider('min_samples:', min_value=0, max_value=20, step=1)
-#             xi = st.slider('xi:', min_value=0.0, max_value=1.0, step=0.01)
-#             cluster = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
-#         elif algorithm == 'BIRCH' :
-#             n_cluster = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1)
-#             threas = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
+                age = st.number_input('Enter age (18-80):', min_value=18, max_value=80, value=30)
 
+                income = st.number_input('Enter annual income (30000.00-100000.00):', min_value=3000.00, max_value=300000.00, value=50000.00, step=0.01, format="%.2f")
 
-#     with st.form(key="clustering_form"):
-#         st.subheader("Clustering")
-#         st.write("Enter customer details for clustering.")
+                purchase_history = st.number_input('Enter Purchase history :', min_value=100, max_value=50000, value=500)
 
-#         age = st.number_input('Enter age (18-80):', min_value=18, max_value=80, value=30)
+                customer_spending_score = st.number_input('Enter Customer Spending Score :', min_value=0, max_value=100, value=50)
 
-#         income = st.number_input('Enter annual income (30000.00-100000.00):', min_value=3000.00, max_value=300000.00, value=50000.00, step=0.01, format="%.2f")
+                freq_of_visit = st.number_input('Enter frequency of visit:', min_value=0, max_value=100, value=50)
 
-#         purchase_history = st.number_input('Enter Purchase history :', min_value=100, max_value=50000, value=500)
+                gender_opt = ['Male', 'Female', 'Agender', 'Genderqueer', 'Polygender', 'Genderfluid', 'Non-binary', 'Bigender']
 
-#         customer_spending_score = st.number_input('Enter Customer Spending Score :', min_value=0, max_value=100, value=50)
+                gender = preprocess_test(st.radio('Choose an option:', gender_opt,horizontal=True))
 
-#         freq_of_visit = st.number_input('Enter frequency of visit:', min_value=0, max_value=100, value=50)
+                region = preprocess_test(st.radio('Choose an option:', ['East', 'West', 'North', 'South'],horizontal=True))
 
-#         gender_opt = ['Male', 'Female', 'Agender', 'Genderqueer', 'Polygender', 'Genderfluid', 'Non-binary', 'Bigender']
+                customer_type = preprocess_test(st.radio('Choose an option:', ['budget', 'regular', 'premium'], horizontal=True))
 
+                items = np.array([[age, income, purchase_history, customer_spending_score, freq_of_visit, gender, region, customer_type]])
 
-#         gender = st.radio('Choose an option:', gender_opt)
-#         region = st.radio('Choose an option:', ['East', 'West', 'North', 'South'])
-#         customer_type = st.radio('Choose an option:', ['budget', 'regular', 'premium'])
-
-#         items = [age, income, purchase_history, customer_spending_score, freq_of_visit, gender, region, customer_type]
-
-#         if st.form_submit_button("Cluster", use_container_width=True):
-#             if algorithm == "KMeans":
-#                 new_cluster = classify(df, algorithm, num_clusters, items)
-#                 st.write(f"New data point belongs to cluster: {new_cluster}")
-#             # elif algorithm == "DBSCAN":
-#             #     model = DBSCAN(eps=eps)
-#             #     clusters = model.fit_predict(df[['Age', 'Annual Income', 'Credit Score']])
-
-#             # # Add new data point to predict its cluster
-#             # new_data = pd.DataFrame([items], columns=['age', 'income', 'purchase_history', 'customer_spending_score', 'freq_of_visit', 'gender', 'region', 'customer_type'])
-#             # new_cluster = model.predict(new_data)[0]
-
-#             # st.write(f"New data point belongs to cluster: {new_cluster}")
+                if st.form_submit_button("Cluster", use_container_width=True):
+                    new_cluster = classify(algorithm, items)
+                    st.write(f"The Data belong to {new_cluster}")

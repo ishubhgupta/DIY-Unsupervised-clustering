@@ -41,6 +41,6 @@ def train_model(df, n):
     centroids = kmeans.cluster_centers_
     labels = kmeans.labels_
     evals = evaluate_model(X_pca, labels, "K-Means", centroids)
-    print(evals)
+    joblib.dump(kmeans, 'Code\saved model\kmeans.pkl')
 
     return evals

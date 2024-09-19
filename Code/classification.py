@@ -25,19 +25,17 @@
         # Streamlit 1.36.0
 
 
+import joblib
 import pandas as pd
 from sklearn.cluster import KMeans
-from ingest_transform import preprocess_test, scale_data
+from ingest_transform import preprocess_test, scale_back
 
 
-def classify(df, algorithm, num_clusters, items):
-    items[-3] = preprocess_test(items[-3])
-    items[-2] = preprocess_test(items[-2])
-    items[-1] = preprocess_test(items[-1])
-
+def classify(algorithm, items):
+    scaled_data = scale_back(items)
     if(algorithm == 'KMeans'):
-        model = KMeans(n_clusters=num_clusters, random_state=42)
-        clusters = model.fit_predict(items)
+        model = joblib.load('Code\saved model\kmeans.pkl')
+        clusters = model.predict(scaled_data)
         return clusters
 
         
