@@ -2,3 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+git rm --cached Code/__pycache__/classification.cpython-310.pyc
+git rm --cached Code/__pycache__/train_birch.cpython-310.pyc
+git rm --cached Code/__pycache__/train_db.cpython-310.pyc
+git rm --cached Code/__pycache__/train_gmm.cpython-310.pyc
+git rm --cached Code/__pycache__/train_optics.cpython-310.pyc
+git rm --cached Code/saved\ model/kmeans.pkl
