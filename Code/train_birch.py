@@ -34,10 +34,10 @@ from ingest_transform import preprocess_data, scale_data
 # from load import load_train
 from evaluate import evaluate_model
 
-def train_model(df, minmax):
+def train_model(df,  n_cluster, threas, minmax):
     X = preprocess_data(df)
     X_pca = scale_data(X)
-    birch = Birch(n_clusters=3, threshold=0.65)
+    birch = Birch(n_clusters=n_cluster, threshold=threas)
     labels = birch.fit_predict(X_pca)
     evals = evaluate_model(X_pca, labels, 'BIRCH')
 

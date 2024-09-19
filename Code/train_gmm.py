@@ -34,10 +34,10 @@ from ingest_transform import preprocess_data, scale_data
 # from load import load_train
 from evaluate import evaluate_model
 
-def train_model(df):
+def train_model(df,n):
     X = preprocess_data(df)
     X_pca = scale_data(X)
-    gmm = GaussianMixture(n_components=3, random_state=42)
+    gmm = GaussianMixture(n_components=n, random_state=42)
     labels = gmm.fit_predict(X_pca)
     evals = evaluate_model(X_pca, labels, 'Gaussian Mixture Model')
 

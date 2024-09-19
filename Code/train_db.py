@@ -34,10 +34,11 @@ from ingest_transform import preprocess_data, scale_data
 # from load import load_train
 from evaluate import evaluate_model
 
-def train_model(df, minmax):
+def train_model(df, eps, minsm, minmax):
     X = preprocess_data(df)
     X_pca = scale_data(X, minmax)
-    dbscan = DBSCAN(eps=0.2, min_samples=12).fit(X_pca)
+    # dbscan = DBSCAN(eps=0.2, min_samples=12)
+    dbscan = DBSCAN(eps=eps, min_samples=minsm).fit(X_pca)
     labels = dbscan.labels_
     evals = evaluate_model(X_pca, labels, 'DBSCAN')
 

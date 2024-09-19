@@ -65,9 +65,10 @@ with tab2:
     model_name = 'K-Means'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
+    num_clusters = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1)
     if st.button(f"Train {model_name} Model", use_container_width=True):
         with st.status("Training K-Means Model..."):
-            score = train(df)
+            score = train(df, num_clusters)
     
             st.write(f"Training complete! The score is: {score}")
 
@@ -77,17 +78,17 @@ with tab2:
         st.write(f"Silhouette: {score}")
         st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
-        st.divider()
+    st.divider()
         
     # Gaussian Mixture Model
     
     model_name = 'Gaussian Mixture Model'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
-
+    n_component = st.slider('n_component:', min_value=0, max_value=10, step=1)
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status(f"Training {model_name}..."):
-            score= train_gmm(df)
+            score= train_gmm(df,n_component)
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
@@ -95,18 +96,19 @@ with tab2:
         st.write(f"Silhouette: {score}")
         st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
-        st.divider()
+    st.divider()
         
         
     # DBSCAN
     
     model_name = 'DBSCAN'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
-
+    eps = st.slider('EPS (distance threshold):', min_value=0.1, max_value=2.0, value=0.5, step=0.1)
+    min_sm = st.slider('Min Samples', min_value=0, max_value=50, step=2)
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status(f"Training {model_name}..."):
-            score= train_db(df, minmax = True)
+            score= train_db(df, eps, min_sm, minmax = True)
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
@@ -114,7 +116,7 @@ with tab2:
         st.write(f"Silhouette: {score}")
         st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
-        st.divider()
+    st.divider()
 
         
     # OPTICS
@@ -122,10 +124,13 @@ with tab2:
     model_name = 'OPTICS'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
+    min_sample = st.slider('min_samples:', min_value=0, max_value=20, step=1)
+    xi = st.slider('xi:', min_value=0.0, max_value=1.0, step=0.01)
+    cluster = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status(f"Training {model_name}..."):
-            score= train_optics(df, minmax = True)
+            score= train_optics(df, min_sample, xi, cluster,minmax = True)
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
@@ -133,17 +138,19 @@ with tab2:
         st.write(f"Silhouette: {score}")
         st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
-        st.divider()
+    st.divider()
 
         
     # BIRCH
     model_name = 'BIRCH'
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
+    n_clus1 = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1, key='clusters_option_2')
+    threas = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05, key='thres_option_2')
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status(f"Training {model_name}..."):
-            score= train_birch(df, minmax = True)
+            score= train_birch(df, n_clus1, threas, minmax = True)
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
@@ -151,7 +158,7 @@ with tab2:
         st.write(f"Silhouette: {score}")
         st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
 
-        st.divider()
+    st.divider()
 
 
 # with tab3:

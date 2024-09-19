@@ -34,10 +34,10 @@ from ingest_transform import preprocess_data, scale_data
 # from load import load_train
 from evaluate import evaluate_model
 
-def train_model(df):
+def train_model(df, n):
     X = preprocess_data(df)
     X_pca = scale_data(X)
-    kmeans = KMeans(n_clusters=3, random_state=42).fit(X_pca)
+    kmeans = KMeans(n_clusters=n, random_state=42).fit(X_pca)
     centroids = kmeans.cluster_centers_
     labels = kmeans.labels_
     evals = evaluate_model(X_pca, labels, "K-Means", centroids)
