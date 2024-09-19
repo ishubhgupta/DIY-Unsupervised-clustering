@@ -25,20 +25,17 @@
         # Streamlit 1.36.0
 
 
-import pandas as pd # For data manipulation and analysis
-import joblib # For loading the trained model
-from sklearn.cluster import Birch
-from ingest_transform import preprocess_data, scale_data
+import joblib
+import pandas as pd
+from sklearn.cluster import KMeans
+from ingest_transform import preprocess_test, scale_back
 
-# Importing helper functions from the local .py files
-# from load import load_train
-from evaluate import evaluate_model
 
-def train_model(df,  n_cluster, threas, minmax):
-    X = preprocess_data(df)
-    X_pca = scale_data(X)
-    birch = Birch(n_clusters=n_cluster, threshold=threas)
-    labels = birch.fit_predict(X_pca)
-    evals = evaluate_model(X_pca, labels, 'BIRCH')
+def classify(algorithm, items):
+    scaled_data = scale_back(items)
+    if(algorithm == 'KMeans'):
+        model = joblib.load('Code\saved model\kmeans.pkl')
+        clusters = model.predict(scaled_data)
+        return clusters
 
-    return evals
+        
