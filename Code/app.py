@@ -27,6 +27,7 @@
 
 import pandas as pd
 import streamlit as st # For building the web app
+from train_Kmeans import train_model as train
 
 st.set_page_config(page_title="Unsupervised Clustering", page_icon=":cash:", layout="centered")
 st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering </h1>", unsafe_allow_html=True)
@@ -53,3 +54,8 @@ with tab2:
     st.divider()
     
     st.markdown("<h3 style='text-align: center; color: white;'>K-Means</h3>", unsafe_allow_html=True)
+
+    if st.button("Train K-Means Model", use_container_width=True):
+        
+        with st.status("Training K-Means Model..."):
+            score, cluster_graph = train(df)
