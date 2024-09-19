@@ -59,3 +59,6 @@ with tab2:
         
         with st.status("Training K-Means Model..."):
             score, cluster_graph = train(df)
+
+        st.success("K-Means Trained Sucessully")
+        st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)

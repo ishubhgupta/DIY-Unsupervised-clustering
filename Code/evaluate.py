@@ -24,26 +24,29 @@
         # Python 3.11.5
         # Streamlit 1.36.0
 
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
 
-import pandas as pd # For data manipulation and analysis
-import joblib # For loading the trained model
-from sklearn.cluster import KMeans # For training the model
-from ingest_transform import preprocess_data, scale_data, feature_selection
+def evaluate_model(labels, X_pca):
+    silhouette_avg = silhouette_score(X_pca, labels)
 
-# Importing helper functions from the local .py files
-from load import load_train
-from evaluate import evaluate_model, grpahs_k
+    return silhouette_avg
 
-def train_model(df):
-    df = preprocess_data(df)
-    X = feature_selection(df)
-    X_pca = scale_data(X)
-    kmeans = KMeans(n_clusters=3, random_state=42).fit(X_pca)
-    centroids = kmeans.cluster_centers_
-    labels = kmeans.labels_
-    evals = evaluate_model(X_pca, labels)
-    graph = grpahs_k()
+def graphs_k(X_pca, labels, centroids):
+    plt.figure(figsize=(8, 6))
 
-    # Save the trained model
-    joblib.dump(kmeans, model_path)
-    return evals, graph
+    # Scatter plot of the data points colored by cluster label
+    plt.scatter(X_pca[:, 0], X_pca[:, 1], c=labels, cmap='viridis', marker='o', s=100, label="Data points")
+
+    # Plot the centroids on the same plot
+    plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=200, marker='x', label="Centroids")
+
+    # Adding title and labels
+    plt.title('K-Means Clustering on Dataset')
+    plt.xlabel('Feature 1 (Standardized)')
+    plt.ylabel('Feature 2 (Standardized)')
+    plt.legend()
+    plt.grid(True)
+
+    # Show the plot
+    plt.show()
