@@ -27,7 +27,7 @@
 
 import pandas as pd # For data manipulation and analysis
 import joblib # For loading the trained model
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import DBSCAN, OPTICS
 from ingest_transform import preprocess_data, scale_data
 
 # Importing helper functions from the local .py files
@@ -37,8 +37,8 @@ from evaluate import evaluate_model
 def train_model(df, minmax):
     X = preprocess_data(df)
     X_pca = scale_data(X, minmax)
-    dbscan = DBSCAN(eps=0.2, min_samples=12).fit(X_pca)
-    labels = dbscan.labels_
-    evals = evaluate_model(X_pca, labels, 'DBSCAN')
+    optics = OPTICS(min_samples=10, xi=0.02, min_cluster_size=0.25).fit(X_pca)
+    labels = optics.labels_
+    evals = evaluate_model(X_pca, labels, 'OPTICS')
 
     return evals

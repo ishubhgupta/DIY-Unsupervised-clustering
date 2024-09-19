@@ -30,6 +30,8 @@ import streamlit as st # For building the web app
 from train_Kmeans import train_model as train
 from train_gmm import train_model as train_gmm
 from train_db import train_model as train_db
+from train_optics import train_model as train_optics
+from train_birch import train_model as train_birch
 
 st.set_page_config(page_title="Unsupervised Clustering", page_icon=":cash:", layout="centered")
 st.markdown("<h1 style='text-align: center; color: white;'>Unsupervised Clustering </h1>", unsafe_allow_html=True)
@@ -100,7 +102,44 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         
         with st.status(f"Training {model_name}..."):
-            score= train_db(df)
+            score= train_db(df, minmax = True)
+
+        st.success(f"{model_name} Trained Sucessully")
+        st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
+
+        st.write(f"Silhouette: {score}")
+        st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
+
+        st.divider()
+
+        
+    # OPTICS
+    
+    model_name = 'OPTICS'
+    st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
+
+    if st.button(f"Train {model_name} Model", use_container_width=True):
+        
+        with st.status(f"Training {model_name}..."):
+            score= train_optics(df, minmax = True)
+
+        st.success(f"{model_name} Trained Sucessully")
+        st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)
+
+        st.write(f"Silhouette: {score}")
+        st.image(f"Code/saved images/{model_name}.jpg", caption=f"Cluster graph of {model_name}", width=600)
+
+        st.divider()
+
+        
+    # BIRCH
+    model_name = 'BIRCH'
+    st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
+
+    if st.button(f"Train {model_name} Model", use_container_width=True):
+        
+        with st.status(f"Training {model_name}..."):
+            score= train_birch(df, minmax = True)
 
         st.success(f"{model_name} Trained Sucessully")
         st.markdown("<h4 style='text-align: center; color: white;'>Model Evaluation </h4>", unsafe_allow_html=True)

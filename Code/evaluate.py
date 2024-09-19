@@ -45,6 +45,7 @@ def evaluate_model(X_pca, labels, algorithm_name, centroids = None):
     plt.ylabel('Feature 2 (Standardized)')
     plt.legend()
     plt.grid(True)
+    plt.colorbar(label='Cluster Label')
     plt.savefig(f'Code/saved images/{algorithm_name}.jpg', format="jpg", dpi=300)
     plt.show()
     return silhouette_avg
