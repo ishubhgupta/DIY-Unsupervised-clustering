@@ -32,6 +32,7 @@ from sklearn.calibration import LabelEncoder
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import MinMaxScaler
 
 
 def preprocess_data(df):
@@ -50,9 +51,12 @@ def preprocess_data(df):
 
     return X
 
-def scale_data(X):
-    scaler = StandardScaler()  # Changed to StandardScaler
-    # scaler = MinMaxScaler()  # Changed to StandardScaler
+def scale_data(X, minmax = False):
+    if(minmax == False):
+        scaler = StandardScaler()  
+    else:
+        scaler = MinMaxScaler()  # Changed to StandardScaler
+
     X_scaled = scaler.fit_transform(X)
 
     # Dimensionality Reduction using PCA
