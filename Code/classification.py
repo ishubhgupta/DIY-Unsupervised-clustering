@@ -33,9 +33,28 @@ from ingest_transform import preprocess_test, scale_back
 
 def classify(algorithm, items):
     scaled_data = scale_back(items)
-    if(algorithm == 'KMeans'):
+    if(algorithm == 'K-Means'):
         model = joblib.load('Code\saved model\kmeans.pkl')
-        clusters = model.predict(scaled_data)
+        clusters = model.predict(scaled_data)+1
         return clusters
-
-        
+    
+    elif(algorithm == 'Gaussian Mixture Model'):
+        model = joblib.load('Code\saved model\gmm.pkl')
+        clusters = model.predict(scaled_data)+1
+        return clusters
+    
+    elif(algorithm == 'DBSCAN'):
+        model = joblib.load('Code\saved model\dbscan.pkl')
+        clusters = model.predict(scaled_data)+1
+        return clusters
+    
+    elif(algorithm == 'OPTICS'):
+        model = joblib.load('Code\saved model\optics.pkl')
+        clusters = model.predict(scaled_data)+1
+        return clusters
+    
+    elif(algorithm == 'BIRCH'):
+        model = joblib.load(r'Code\saved model\birch.pkl')
+        clusters = model.predict(scaled_data)+1
+        return clusters
+    
