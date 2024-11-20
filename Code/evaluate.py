@@ -20,6 +20,8 @@
     # Environment:     
         # Python 3.10.11
         # Streamlit 1.40.0
+        # numpy 1.24.3
+        # matplotlib 3.6.0
 
 # Import necessary libraries
 import numpy as np  # For numerical operations, especially working with arrays

@@ -20,6 +20,8 @@
     # Environment:     
         # Python 3.10.11
         # Streamlit 1.40.0
+        # numpy 1.24.3
+        # pandas 1.5.3
 
 # importing all dependencies
 import numpy as np
