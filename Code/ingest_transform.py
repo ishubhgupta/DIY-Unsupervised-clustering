@@ -10,7 +10,7 @@
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This Streamlit app allows users to input features and make predictions using Unsupervised Learning.
+    # Description: This script handles data ingestion, preprocessing, and transformation operations. It includes functions for data scaling, PCA transformation, and SQLite database operations for storing and retrieving data paths.
         # SQLite: Yes
         # MQs: No
 
@@ -19,7 +19,10 @@
 # Dependency: 
     # Environment:     
         # Python 3.10.11
-        # Streamlit 1.40.0
+        # numpy 1.24.3
+        # pandas 1.5.3
+        # scikit-learn 1.2.2
+        # sqlite3 (built-in)
 
 # Import necessary libraries
 import pandas as pd  # For data manipulation and analysis

@@ -10,7 +10,7 @@
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This Streamlit app allows users to input features and make predictions using Unsupervised Learning.
+    # Description: This is the main Streamlit application script that provides a web interface for customer segmentation. It integrates all clustering algorithms and allows users to train models, evaluate performance, and classify new customers through an interactive interface.
         # SQLite: Yes
         # MQs: No
 
@@ -19,9 +19,11 @@
 # Dependency: 
     # Environment:     
         # Python 3.10.11
-        # Streamlit 1.40.0
         # numpy 1.24.3
         # pandas 1.5.3
+        # streamlit 1.40.0
+        # joblib 1.3.1
+        # scikit-learn 1.2.2
 
 # importing all dependencies
 import numpy as np

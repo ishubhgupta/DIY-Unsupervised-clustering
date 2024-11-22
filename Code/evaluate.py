@@ -10,7 +10,7 @@
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This Streamlit app allows users to input features and make predictions using Unsupervised Learning.
+    # Description: This script provides evaluation metrics and visualization capabilities for clustering models. It calculates silhouette scores and generates cluster visualization plots for model performance analysis.
         # SQLite: Yes
         # MQs: No
 
@@ -19,8 +19,8 @@
 # Dependency: 
     # Environment:     
         # Python 3.10.11
-        # Streamlit 1.40.0
         # numpy 1.24.3
+        # scikit-learn 1.2.2
         # matplotlib 3.6.0
 
 # Import necessary libraries
