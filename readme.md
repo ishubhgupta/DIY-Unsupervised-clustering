@@ -17,10 +17,23 @@ Unsupervised clustering methods are used to group data points into clusters base
 The dataset used for clustering tasks is designed to facilitate clustering analysis and includes features suitable for unsupervised learning. Proper preprocessing and scaling of the data are essential before applying the clustering algorithms.
 
 ## Directory Structure
-
-- *Code/*: Contains all scripts for data ingestion, transformation, model training, evaluation, and visualization.
-- *saved images/*: Directory where generated plots are saved.
-
+```plaintext
+DIY-Unsupervised-clustering/
+├── Code/
+│   ├── app.py               # Main Streamlit application
+│   ├── ingest_transform.py  # Data preprocessing
+│   ├── train_brich.py          # Model training scripts
+│   ├── train_db.py          # Model training scripts
+│   ├── train_gmm.py          # Model training scripts
+│   ├── train_kmeans.py          # Model training scripts
+│   ├── train_optics.py          # Model training scripts
+│   ├── evaluate.py         # Model evaluation
+│   └── classification.py   # Prediction functionality
+├── Data/
+│   ├── Master/            # Raw data storage
+│   └── Processed/         # Processed data and SQLite DB
+└── saved images/          # Generated visualizations
+```
 
 ## Program Flow
 
@@ -32,17 +45,42 @@ The dataset used for clustering tasks is designed to facilitate clustering analy
 
 ## Steps to Run
 
-1. *Install Dependencies*:
-    bash
+1. **Install Dependencies**:
+    ```bash
     pip install -r requirements.txt
-    
+    ```
 
-2. *Run*:
-    bash
-    python Code/app.py
-    
+2. **Run the Application**:
+    ```bash
+    streamlit run Code/app.py
+    ```
 
-3. *View Evaluation Results*: Check the saved images/ directory for saved plots and evaluation results.
+3. **Input Data Path**:
+    - Open the application in your web browser (Streamlit will provide a local URL).
+    - In the "Model Config" tab, enter the path to your master data CSV file in the text input box. For example:
+      ```
+      Data/Master/MOCK_DATA.csv
+      ```
+    - Click outside the text box to load the data. A preview of the data will be displayed.
+
+4. **Train the Model**:
+    - Go to the "Model Training & Evaluation" tab.
+    - Select the clustering algorithm you want to train (e.g., K-Means, Gaussian Mixture Model, DBSCAN, OPTICS, BIRCH).
+    - Configure the model parameters (e.g., number of clusters for K-Means, EPS for DBSCAN).
+    - Click the "Train [Model Name] Model" button to start training.
+    - Once training is complete, the silhouette score and a cluster graph image will be displayed.
+
+5. **Make Predictions on New Data**:
+    - Go to the "Classification" tab.
+    - Select the clustering algorithm you trained earlier from the dropdown menu.
+    - Enter the customer details for clustering (e.g., age, income, purchase history, etc.).
+    - Click the "Cluster" button to classify the new data.
+    - The predicted cluster label and the corresponding cluster graph image will be displayed.
+
+6. **View Evaluation Results**:
+    - Check the `saved images/` directory for saved plots and evaluation results.
+    - The cluster graph images for each trained model will be saved in this directory.
+
 
 ## Contact
 
