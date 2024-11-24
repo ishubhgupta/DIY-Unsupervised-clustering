@@ -35,7 +35,7 @@ from train_db import train_model as train_db
 from train_optics import train_model as train_optics
 from train_birch import train_model as train_birch
 from classification import classify
-from ingest_transform import preprocess_test, store_path_to_sqlite, retrieve_path_from_sqlite
+from ingest_transform import preprocess_test, store_path_to_sqlite, retrieve_data_from_sqlite
 
 
 
@@ -53,48 +53,28 @@ if "master_data_path" not in st.session_state:
 
 tab1, tab2, tab3 = st.tabs(["Model Config", "Model Training & Evaluation", "Classification"])
 
-# Inside tab1: This code block executes when the first tab is active in Streamlit.
+
+# Inside tab1:
 with tab1:
-    # Input for the file path, taking user input through a text box.
-    # The initial value is set to the current master data path stored in the session state.
     uploaded_file = st.text_input("Enter the path to the Master data", value=st.session_state.master_data_path)
 
-    # Check if the user has entered a file path.
     if uploaded_file:
         try:
-            # Attempt to load the data from the provided CSV file path.
             df = pd.read_csv(uploaded_file)
-
-            # Display a preview of the first few rows of the loaded DataFrame.
             st.write("Here is a preview of your data:")
             st.write(df.head())
-
-            # Update the session state to store the newly provided master data path.
-            # This allows retaining the path even if the user refreshes or re-runs the app.
+            store_path_to_sqlite(uploaded_file, st.session_state.sqlite_db_path)
             st.session_state.master_data_path = uploaded_file
-
-            # Retrieve the path to the SQLite database from the session state.
-            db_path = st.session_state.sqlite_db_path
-
-            # Call the function `store_path_to_sqlite` to store the uploaded file path into the SQLite database.
-            # This function is expected to handle the database operations, such as connecting to the database and
-            # inserting or updating records with the file path.
-            store_path_to_sqlite(uploaded_file, db_path)
-
-        # Catch any exceptions that occur during the file reading process.
+            st.success("Data successfully loaded and stored in database!")
         except Exception as e:
-            # Display an error message in the Streamlit app with details of the exception.
             st.error(f"Error loading file: {e}")
-
-    # If no file path is provided by the user, load the default data.
     else:
-        # Load the data from the default master data path stored in the session state.
-        # This path would have been set earlier when the user last entered a file path.
-        df = pd.read_csv(st.session_state.master_data_path)
-
-        # Display a preview of the first few rows of the default DataFrame.
-        st.write("Here is a preview of your data:")
-        st.write(df.head())
+        df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=False)
+        if df is not None:
+            st.write("Data preview from database:")
+            st.write(df.head())
+        else:
+            st.warning("No data found. Please load a CSV file.")
 
 
 # Inside tab2: This code block executes when the second tab is active in Streamlit.
@@ -124,11 +104,12 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         # Display a status message indicating that training is in progress.
         with st.status("Training K-Means Model..."):
-            # Retrieve the path of the data file from the SQLite database and train the model with the specified number of clusters.
-            score = train(retrieve_path_from_sqlite(db_path), num_clusters)
-
-            # Display the training completion message with the score.
-            st.write(f"Training complete! The score is: {score}")
+            df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=True)
+            if df is not None:
+                score = train(df, num_clusters)
+                st.write(f"Training complete! The score is: {score}")
+                # Display the training completion message with the score.
+                st.write(f"Training complete! The score is: {score}")
 
         # Show a success message upon successful training of the model.
         st.success(f"{model_name} Trained Successfully")
@@ -159,8 +140,10 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         # Display status message while the model is training.
         with st.status(f"Training {model_name}..."):
-            # Train the model with the specified number of components.
-            score = train_gmm(retrieve_path_from_sqlite(db_path), n_component)
+            df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=True)
+            if df is not None:
+                score = train_gmm(df, n_component)
+                st.write(f"Training complete! The score is: {score}")
 
         # Display success message upon completion.
         st.success(f"{model_name} Trained Successfully")
@@ -192,8 +175,10 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         # Display status message while the model is training.
         with st.status(f"Training {model_name}..."):
-            # Train the DBSCAN model with specified parameters.
-            score = train_db(retrieve_path_from_sqlite(db_path), eps, min_sm, minmax=True)
+            df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=True)
+            if df is not None:
+                score = train_db(df, eps, min_sm, minmax=True)
+                st.write(f"Training complete! The score is: {score}")
 
         # Display success message upon completion.
         st.success(f"{model_name} Trained Successfully")
@@ -228,8 +213,10 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         # Display status message while the model is training.
         with st.status(f"Training {model_name}..."):
-            # Train the OPTICS model with specified parameters.
-            score = train_optics(retrieve_path_from_sqlite(db_path), min_sample, xi, cluster, minmax=True)
+            df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=True)
+            if df is not None:
+                score = train_optics(df, min_sample, xi, cluster, minmax=True)
+                st.write(f"Training complete! The score is: {score}")
 
         # Display success message upon completion.
         st.success(f"{model_name} Trained Successfully")
@@ -261,8 +248,10 @@ with tab2:
     if st.button(f"Train {model_name} Model", use_container_width=True):
         # Display status message while the model is training.
         with st.status(f"Training {model_name}..."):
-            # Train the BIRCH model with specified parameters.
-            score = train_birch(retrieve_path_from_sqlite(db_path), n_clus1, threas, minmax=True)
+            df = retrieve_data_from_sqlite(st.session_state.sqlite_db_path, processed=True)
+            if df is not None:
+                score = train_birch(df, n_clus1, threas, minmax=True)
+                st.write(f"Training complete! The score is: {score}")
 
         # Display success message upon completion.
         st.success(f"{model_name} Trained Successfully")

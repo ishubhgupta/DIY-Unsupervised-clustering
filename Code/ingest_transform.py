@@ -137,79 +137,53 @@ def scale_back(items, minm=False):
 
     return scaled_pca
 
-# Function to store the master data path in SQLite
-def store_path_to_sqlite(path, db_path):
+def store_data_to_sqlite(df, db_path):
     """
-    Stores the master data path in an SQLite database.
-
-    Parameters:
-    path (str): The file path to be stored.
-    db_path (str): The path to the SQLite database file.
+    Stores the entire DataFrame in SQLite database.
     """
     try:
-        # Create or connect to the SQLite database
         conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-
-        # Create a table if it doesn't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS config (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                master_data_path TEXT
-            );
-        ''')
-
-        # Insert the master data path into the table
-        cursor.execute('''
-            INSERT INTO config (master_data_path)
-            VALUES (?)
-        ''', (path,))
+        # Store raw data
+        df.to_sql('raw_data', conn, if_exists='replace', index=False)
         
-        conn.commit()  # Commit the changes to the database
-        conn.close()  # Close the database connection
-        print("Path stored successfully.")
+        # Process data
+        processed_data = preprocess_data(df)
+        processed_df = pd.DataFrame(processed_data, columns=['age', 'income', 'purchase_history', 
+                                                           'customer_spending_score', 'freq_of_visit', 
+                                                           'gender', 'region', 'customer_type'])
+        
+        # Store processed data
+        processed_df.to_sql('processed_data', conn, if_exists='replace', index=False)
+        conn.close()
     except Exception as e:
-        print(f"Error storing path to SQLite: {e}")
+        print(f"Error storing data to SQLite: {e}")
 
-# Function to retrieve the master data path from SQLite
-def retrieve_path_from_sqlite(db_path):
+def retrieve_data_from_sqlite(db_path, processed=False):
     """
-    Retrieves the master data path from the SQLite database and reads the corresponding CSV file.
-
-    Parameters:
-    db_path (str): The path to the SQLite database file.
-
-    Returns:
-    DataFrame or None: The DataFrame read from the CSV file if successful; otherwise, None.
+    Retrieves data from SQLite database.
+    Args:
+        processed (bool): If True, returns processed data, else returns raw data
     """
     try:
-        # Connect to the SQLite database
         conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-
-        # Retrieve the latest master data path from the config table
-        cursor.execute('SELECT master_data_path FROM config ORDER BY id DESC LIMIT 1')
-        row = cursor.fetchone()  # Fetch the latest record
-        conn.close()  # Close the database connection
-
-        if row:
-            csv_path = row[0]  # Get the path from the fetched row
-            try:
-                # Read the CSV file using the retrieved path
-                df = pd.read_csv(csv_path)
-                return df
-            except FileNotFoundError:
-                print(f"File not found at path: {csv_path}")
-                return None
-            except pd.errors.EmptyDataError:
-                print(f"No data found in the file at path: {csv_path}")
-                return None
-            except Exception as e:
-                print(f"Error reading CSV file: {e}")
-                return None
-        else:
-            print("No path found in the database.")
-            return None
+        table_name = 'processed_data' if processed else 'raw_data'
+        df = pd.read_sql(f'SELECT * FROM {table_name}', conn)
+        conn.close()
+        return df
     except Exception as e:
-        print(f"Error retrieving path from SQLite: {e}")
+        print(f"Error retrieving data from SQLite: {e}")
         return None
+
+# Modify existing store_path_to_sqlite function
+def store_path_to_sqlite(path, db_path):
+    try:
+        # Read the CSV file
+        df = pd.read_csv(path)
+        # Store the data in SQLite
+        store_data_to_sqlite(df, db_path)
+    except Exception as e:
+        print(f"Error: {e}")
+
+# Modify existing retrieve_path_from_sqlite function
+def retrieve_path_from_sqlite(db_path):
+    return retrieve_data_from_sqlite(db_path, processed=True)

@@ -34,36 +34,15 @@ from ingest_transform import preprocess_data, scale_data  # Custom functions for
 from evaluate import evaluate_model  # Function to evaluate the clustering model's performance
 
 def train_model(df, min_sample, xi, cluster, minmax):
-    """
-    Train the OPTICS clustering algorithm using the provided DataFrame.
-
-    Args:
-        df (pd.DataFrame): The input DataFrame containing data for clustering.
-        min_sample (int): The minimum number of samples in a neighborhood for a point to be considered a core point.
-        xi (float): The steepness parameter for determining the cluster stability.
-        cluster (float): The minimum size of clusters (as a proportion of the dataset).
-        minmax (bool): Flag to indicate whether to use MinMaxScaler for scaling.
-
-    Returns:
-        evals: Evaluation results from the evaluate_model function.
-    """
-    # Preprocess the input DataFrame to prepare it for clustering
-    X = preprocess_data(df)
-    
-    # Scale the data and apply PCA transformation for dimensionality reduction
-    X_pca = scale_data(X, minmax)
-    
-    # Initialize the OPTICS model with the specified parameters and fit it to the PCA-transformed data
-    optics = OPTICS(min_samples=min_sample, xi=xi, min_cluster_size=cluster).fit(X_pca)
-    
-    # Retrieve the predicted labels for each sample in the dataset
-    labels = optics.labels_
-    
-    # Evaluate the model's performance using the custom evaluation function
-    evals = evaluate_model(X_pca, labels, 'OPTICS')
-    
-    # Save the trained OPTICS model to a file for future use
-    joblib.dump(optics, 'Code\\saved model\\optics.pkl')
-
-    # Return the evaluation results for further analysis
-    return evals
+    """Train OPTICS model using DataFrame directly"""
+    try:
+        X = df.values
+        X_pca = scale_data(X, minmax)
+        optics = OPTICS(min_samples=min_sample, xi=xi, min_cluster_size=cluster).fit(X_pca)
+        labels = optics.labels_
+        evals = evaluate_model(X_pca, labels, 'OPTICS')
+        joblib.dump(optics, 'Code/saved model/optics.pkl')
+        return evals
+    except Exception as e:
+        print(f"Error in OPTICS training: {e}")
+        return None

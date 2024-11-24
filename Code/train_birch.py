@@ -35,35 +35,15 @@ from ingest_transform import preprocess_data, scale_data  # Custom preprocessing
 from evaluate import evaluate_model  # Custom function to evaluate the model's performance
 
 def train_model(df, n_cluster, threas, minmax):
-    """
-    Train the BIRCH clustering model using the input DataFrame.
-    
-    Args:
-        df (pd.DataFrame): The input DataFrame containing data to be used for training.
-        n_cluster (int): Number of clusters to form. If set to None, BIRCH will automatically determine clusters.
-        threas (float): Threshold for the BIRCH model, which controls the radius of subclusters.
-        minmax (bool): Indicates whether to use MinMaxScaler for scaling (True) or StandardScaler (False).
-
-    Returns:
-        evals: The evaluation results from the evaluate_model function, which assesses the model's performance.
-    """
-    # Preprocess the data using custom preprocessing function
-    X = preprocess_data(df)
-    
-    # Scale the data and apply PCA transformation
-    X_pca = scale_data(X, minm=minmax)
-    
-    # Initialize the BIRCH clustering model with specified parameters
-    birch = Birch(n_clusters=n_cluster, threshold=threas)
-    
-    # Fit the model to the data and predict cluster labels
-    labels = birch.fit_predict(X_pca)
-    
-    # Evaluate the model using custom evaluation function
-    evals = evaluate_model(X_pca, labels, 'BIRCH')
-    
-    # Save the trained BIRCH model to a file using joblib
-    joblib.dump(birch, r'Code\saved model\birch.pkl')
-
-    # Return the evaluation results
-    return evals
+    """Train BIRCH model using DataFrame directly"""
+    try:
+        X = df.values
+        X_pca = scale_data(X, minm=minmax)
+        birch = Birch(n_clusters=n_cluster, threshold=threas)
+        labels = birch.fit_predict(X_pca)
+        evals = evaluate_model(X_pca, labels, 'BIRCH')
+        joblib.dump(birch, 'Code/saved model/birch.pkl')
+        return evals
+    except Exception as e:
+        print(f"Error in BIRCH training: {e}")
+        return None
