@@ -153,7 +153,7 @@ with tab2:
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
     # Slider to select the number of components for the Gaussian Mixture Model.
-    n_component = st.slider('n_component:', min_value=0, max_value=10, step=1)
+    n_component = st.slider('n_component:', min_value=2, max_value=10, step=1)
 
     # Button to trigger training of the Gaussian Mixture Model.
     if st.button(f"Train {model_name} Model", use_container_width=True):
@@ -183,10 +183,10 @@ with tab2:
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
     # Slider to select the EPS value, which is the distance threshold for clustering in DBSCAN.
-    eps = st.slider('EPS (distance threshold):', min_value=0.1, max_value=2.0, value=0.5, step=0.1)
+    eps = st.slider('EPS (distance threshold):', min_value=0.30, max_value=2.0, value=0.5, step=0.1)
 
     # Slider to select the minimum samples required to form a cluster.
-    min_sm = st.slider('Min Samples', min_value=0, max_value=50, step=2)
+    min_sm = st.slider('Min Samples', min_value=20, max_value=50, step=2)
 
     # Button to trigger training of the DBSCAN model.
     if st.button(f"Train {model_name} Model", use_container_width=True):
@@ -216,13 +216,13 @@ with tab2:
     st.markdown(f"<h3 style='text-align: center; color: white;'>{model_name}</h3>", unsafe_allow_html=True)
 
     # Slider to select the minimum samples required to form a cluster.
-    min_sample = st.slider('min_samples:', min_value=0, max_value=20, step=1)
+    min_sample = st.slider('min_samples:', min_value=2, max_value=20, step=1)
 
     # Slider to select the xi value, which is a steepness threshold used in OPTICS clustering.
-    xi = st.slider('xi:', min_value=0.0, max_value=1.0, step=0.01)
+    xi = st.slider('xi:', min_value=0.1, max_value=0.75, step=0.01)
 
     # Slider to select the minimum cluster size.
-    cluster = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05)
+    cluster = st.slider('min_cluster_size:', min_value=0.1, max_value=0.25, step=0.05)
 
     # Button to trigger training of the OPTICS model.
     if st.button(f"Train {model_name} Model", use_container_width=True):
@@ -255,7 +255,7 @@ with tab2:
     n_clus1 = st.number_input('Number of clusters:', min_value=2, max_value=10, value=3, step=1, key='clusters_option_1')
 
     # Slider to select the threshold value for forming clusters in BIRCH.
-    threas = st.slider('min_cluster_size:', min_value=0.0, max_value=1.0, step=0.05, key='thres_option_2')
+    threas = st.slider('min_cluster_size:', min_value=0.1, max_value=0.55, step=0.05, key='thres_option_2')
 
     # Button to trigger training of the BIRCH model.
     if st.button(f"Train {model_name} Model", use_container_width=True):
